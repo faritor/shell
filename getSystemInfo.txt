@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo 
+echo "##############################################################################################"
+echo "# File Name:      getSystemInfo.sh"
+echo "# Author:         Faritor"
+echo "# Mail:           faritor@unmz.net"
+echo "# Created Time:   2017-09-28 11:12:25"
+echo "###############################################################################################"
+echo
+echo "###############################################################################################"
+echo "##########                    View the number of physical CPUs                       ##########"
+cat /proc/cpuinfo | grep "physical id" | sort | uniq
+echo "##########  See the number of cores in each physical CPU (ie, the number of cores)   ##########"
+cat /proc/cpuinfo | grep "cpu cores" | uniq
+echo "##########                View the number of threads in each physical CPU            ##########"
+cat /proc/cpuinfo | grep "siblings" | uniq
+echo "##########                      View the number of logical CPUs                      ##########"
+cat /proc/cpuinfo | grep "processor"
+echo "##########                           View the CPU model                              ##########"
+cat /proc/cpuinfo | grep "model name" | uniq
+echo "##########                        View system memory size(M)                         ##########"
+free -m
+echo "##########                        View the hard disk size(G)                         ##########"
+lsblk
+echo "###############################################################################################"
