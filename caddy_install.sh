@@ -13,8 +13,8 @@ mv /usr/local/bin/caddy /etc/caddy/
 
 echo >> /etc/caddy/Caddyfile
 
-echo "#!/bin/bash \n\n\n\nnohup ./caddy -conf="./Caddyfile" >/dev/null 2>log & " >> /etc/caddy/start
+echo -e "#!/bin/bash \n\n\n\nnohup ./caddy -conf="./Caddyfile" >/dev/null 2>log & " >> /etc/caddy/start
 
-echo "#!/bin/bash \n\n\n\npkill caddy" >> /etc/caddy/stop
+echo -e "#!/bin/bash \n\n\n\npkill caddy" >> /etc/caddy/stop
 
 chmod +x /etc/caddy/s*
