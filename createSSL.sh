@@ -8,7 +8,7 @@
 
 read -p "请输入需要生成证书的域名:" DOMAIN
 if [ -z "$DOMAIN" ];then
-	echo -e "\033[36m请输入域名!!!\033[0m"
+	echo -e "\033[1;31m请输入域名!!!\033[0m"
 	exit
 fi
 
@@ -22,10 +22,13 @@ if [ -z "$SSL_PATH" ];then
 	SSL_PATH='/data/nginx/ssl'
 fi
 
-if [ ! -d "~/.acme.sh" ];then
-    echo -e "\033[36m本机或当前登录用户还未安装acme,正在下载...\033[0m"
+Path=~/.acme.sh
+if [ ! -d "$Path" ]; then  
+	echo -e "\033[1;36m本机或当前登录用户还未安装acme,正在下载...\033[0m"
     curl https://get.acme.sh | sh
-    echo -e "\033[36m下载完成,开始创建证书\033[0m"
+    echo -e "\033[1;36m下载完成,开始创建证书\033[0m"
+else
+	echo -e '\033[1;36m本机或者当前用户已经下载了acme,跳过\033[0m'
 fi
 
 if [ ! -d "$WWWROOT" ];then
@@ -39,14 +42,24 @@ fi
 PWDIR=$WWWROOT/$DOMAIN
 SSL_DIR=$SSL_PATH/$DOMAIN
 
-mkdir $PWDIR
+if [ ! -d "$PWDIR" ]; then
+	mkdir $PWDIR
+fi
 
-/root/.acme.sh/acme.sh --issue -d $DOMAIN -w $PWDIR
+~/.acme.sh/acme.sh --issue -d $DOMAIN -w $PWDIR
 
-mkdir $SSL_DIR
+fullchain=~/.acme.sh/$DOMAIN/fullchain.cer
 
-/root/.acme.sh/acme.sh --installcert -d $DOMAIN --key-file $SSL_DIR/$DOMAIN.key --fullchain-file $SSL_DIR/$DOMAIN.cer --reloadcmd "docker exec -it nginx service nginx force-reload"
-
-echo 'key的路径:' $SSL_DIR/$DOMAIN.key
-echo 'cer的路径:' $SSL_DIR/$DOMAIN.cer
-echo '创建完成!'
+if [ -f "$fullchain" ]; then
+	if [ ! -d "$SSL_DIR" ]; then
+		mkdir $SSL_DIR
+	fi
+	
+	~/.acme.sh/acme.sh --installcert -d $DOMAIN --key-file $SSL_DIR/$DOMAIN.key --fullchain-file $SSL_DIR/$DOMAIN.cer --reloadcmd "docker exec -it nginx service nginx force-reload"
+	
+	echo -e 'key的路径:' $SSL_DIR/$DOMAIN.key
+	echo -e 'cer的路径:' $SSL_DIR/$DOMAIN.cer
+	echo -e '\033[1;36m证书生成完成!\033[0m'
+else
+	echo -e '\033[1;31m证书生成失败!\033[0m'
+fi
