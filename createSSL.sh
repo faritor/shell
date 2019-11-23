@@ -12,9 +12,9 @@ if [ -z "$DOMAIN" ];then
 	exit
 fi
 
-read -p "请指定网站根目录(默认:/data/wwwroot/test):" WWWROOT
+read -p "请指定网站根目录(默认:/data/wwwroot):" WWWROOT
 if [ -z "$WWWROOT" ];then
-	WWWROOT='/data/wwwroot/test'
+	WWWROOT='/data/wwwroot'
 fi
 
 read -p "请指定证书存放的目录(默认:/data/nginx/ssl):" SSL_PATH
